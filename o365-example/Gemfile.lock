@@ -1,5 +1,6 @@
-PATH
-  remote: /Users/skandwal/Documents/Train Powershell/train-pwsh
+GIT
+  remote: https://github.com/mitre/train-pwsh.git
+  revision: bd4732b69969ab6f81771a399d899a6034cdd203
   specs:
     train-pwsh (0.1.0)
       train (~> 3.10)
