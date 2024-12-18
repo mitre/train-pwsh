@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "train", "~> 1.4"
+  spec.add_dependency "train", "~> 3.10"
   #Add powershell dependency
   #spec.add_dependency "pwsh" , "~> 0.1"
 

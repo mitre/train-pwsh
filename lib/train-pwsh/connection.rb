@@ -30,7 +30,7 @@ require "ruby-pwsh"
 module TrainPlugins
   module Pwsh
     # You must inherit from BaseConnection.
-    class Connection < Inspec::Train::Plugins::Transport::BaseConnection
+    class Connection < Train::Plugins::Transport::BaseConnection
       # We've placed platform detection in a separate module; pull it in here.
       include TrainPlugins::Pwsh::Platform
 
@@ -46,20 +46,47 @@ module TrainPlugins
 
         # Regardless, let the BaseConnection have a chance to configure itself.
         super(options)
+        puts('Please wait a few minutes to let the Powershell modules download and connection get established... ')
         #Instance variables that store the necessary authentication credentials
-        @pwsh = Pwsh::Manager.instance
+        #@pwsh_session_graph_exchange = ::Pwsh::Manager.instance('/opt/homebrew/bin/pwsh', ['-NoLogo'])
+        #@pwsh_session_teams_pnp = ::Pwsh::Manager.instance('/opt/homebrew/bin/pwsh', [])
+        @pwsh_session_graph_exchange = @options.delete(:graph_exchange_session)
+        @pwsh_session_teams_pnp = @options.delete(:teams_pnp_session)
         @client_id = @options.delete(:client_id)
         @tenant_id = @options.delete(:tenant_id)
         @client_secret = @options.delete(:client_secret)
         @certificate_path = @options.delete(:certificate_path)
         @certificate_password = @options.delete(:certificate_password)
         @organization = @options.delete(:organization)
+        @sharepoint_admin_url = @options.delete(:sharepoint_admin_url)
+        
+        exit_status_graph_exchange = install_connect_graph_exchange()
+        exit_status_teams_pnp = install_connect_teams_pnp()
+        if exit_status_graph_exchange != 0
+          return exit_status_graph_exchange
+        elsif exit_status_teams_pnp != 0
+          return exit_status_teams_pnp
+        end
+        
       end
 
-      #Establishes connection for modules such as mggraph, exchangeonline, and pnp (sharepoint)
-      def initiate_train_pwsh_session()
-        powershell_auth_mggraph_script = %{
-          #Collect designated inputs required for Graph, Exchange, and PnP connections
+      def file_via_connection(path)
+        return Train::File::Local::Windows.new(self,path)
+      end
+
+      def run_command_via_connection(script, session_type_hash)
+        if session_type_hash.key?(:graph_exchange_session)
+          return run_script_in_graph_exchange(script)
+        elsif session_type_hash.key?(:teams_pnp_session)
+          return run_script_in_teams_pnp(script)
+        else
+          return CommandResult.new("","",0)
+        end
+      end
+            #Establishes connection for modules such as mggraph, exchangeonline
+      def install_connect_graph_exchange()
+        pwsh_graph_exchange_install_connect = %{
+          #Collect designated inputs required for Graph and Exchange connections
           $client_id = '#{@client_id}'
           $tenantid = '#{@tenant_id}'
           $clientSecret = '#{@client_secret}'
@@ -68,41 +95,61 @@ module TrainPlugins
           $organization = '#{@organization}'
 
           #Connect to Graph module
-          Install-Module -Name Microsoft.Graph -Force -AllowClobber
-          import-module microsoft.graph
+          If($null -eq (get-module -listavailable -name "microsoft.graph")){install-module microsoft.graph}
+          If($null -eq (get-module -name "microsoft.graph")){import-module microsoft.graph}
           $password = ConvertTo-SecureString -String $clientSecret -AsPlainText -Force
           $ClientSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential($client_id,$password)
           Connect-MgGraph -TenantId $tenantid -ClientSecretCredential $ClientSecretCredential -NoWelcome
 
           #Connect to Exchange module
-          Install-Module -Name ExchangeOnlineManagement -Force -AllowClobber
-          import-module exchangeonlinemanagement
+          If($null -eq (get-module -listavailable -name "ExchangeOnlineManagement")){install-module ExchangeOnlineManagement}
+          If($null -eq (get-module -name "ExchangeOnlineManagement")){import-module ExchangeOnlineManagement}
           $password = ConvertTo-SecureString -String $clientSecret -AsPlainText -Force
           $ClientSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential($client_id,$password)
           Connect-ExchangeOnline -CertificateFilePath $certificate_path -CertificatePassword (ConvertTo-SecureString -String $certificate_password -AsPlainText -Force)  -AppID $client_id -Organization $organization -ShowBanner:$false
-
-          #Connect to PnP module
-          Install-Module -Name PnP.PowerShell -Force -AllowClobber
-          import-module pnp.powershell
-          $password = (ConvertTo-SecureString -AsPlainText $certificate_password -Force)
-          Connect-PnPOnline -Url $sharepoint_admin_url -ClientId $client_id -CertificatePath $certificate_path -CertificatePassword $password  -Tenant $tenantid
         }
-        OpenStruct.new(
-          # Get stdout, stderr, and exit_status for initial connection.
-          stdout: @pwsh.execute(powershell_auth_mggraph_script)[:stdout],
-          stderr: @pwsh.execute(powershell_auth_mggraph_script)[:stderr],
-          exit_status: @pwsh.execute(powershell_auth_mggraph_script)[:exit_status]
-        )
+        
+        pwsh_graph_exchange_install_connect_result = @pwsh_session_graph_exchange.execute(pwsh_graph_exchange_install_connect)
+        return pwsh_graph_exchange_install_connect_result[:exit_status]
       end
 
-      #Make this run_command_via_connection
-      def run_train_pwsh_command(script)
-        OpenStruct.new(
-          # Get stdout, stderr, and exit_status for following commands ran.
-          stdout: @pwsh.execute(script)[:stdout],
-          stderr: @pwsh.execute(script)[:stderr],
-          exit_status: @pwsh.execute(script)[:exit_status]
-        )
+      def uri
+        return 'pwsh://'
+      end
+
+      def install_connect_teams_pnp()
+        pwsh_teams_pnp_install_connect = %{
+          #Collect designated inputs required for Graph, Exchange, and PnP connections
+          $client_id = '#{@client_id}'
+          $tenantid = '#{@tenant_id}'
+          $certificate_password = '#{@certificate_password}'
+          $certificate_path = '#{@certificate_path}'
+          $sharepoint_admin_url = '#{@sharepoint_admin_url}'
+
+          #Connect to Teams module
+          If($null -eq (get-module -listavailable -name "MicrosoftTeams")){install-module MicrosoftTeams}
+          If($null -eq (get-module -name "MicrosoftTeams")){import-module MicrosoftTeams}
+          $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificate_path,$certificate_password)
+          Connect-MicrosoftTeams -Certificate $cert -ApplicationId $client_id -TenantId $tenantid > $null
+
+          #Connect to PnP module
+          If($null -eq (get-module -listavailable -name "PnP.PowerShell")){install-module PnP.PowerShell}
+          If($null -eq (get-module -name "PnP.PowerShell")){import-module PnP.PowerShell}
+          $password = (ConvertTo-SecureString -AsPlainText $certificate_password -Force)
+          Connect-PnPOnline -Url $sharepoint_admin_url -ClientId $client_id -CertificatePath $certificate_path -CertificatePassword $password -Tenant $tenantid
+        }
+        pwsh_teams_pnp_install_connect_result = @pwsh_session_teams_pnp.execute(pwsh_teams_pnp_install_connect)
+        return pwsh_teams_pnp_install_connect_result[:exit_status]
+      end
+
+      def run_script_in_graph_exchange(script)
+        result = @pwsh_session_graph_exchange.execute(script)
+        return CommandResult.new(result[:stdout],result[:stderr],result[:exit_status])
+      end
+
+      def run_script_in_teams_pnp(script)
+        result = @pwsh_session_teams_pnp.execute(script)
+        return CommandResult.new(result[:stdout],result[:stderr],result[:exit_status])
       end
     end
   end

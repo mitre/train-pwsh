@@ -57,8 +57,7 @@ control 'microsoft-365-foundations-7.2.3' do
   # powershell_output = powershell(ensure_external_content_sharing_restricted_script)
   # raise Inspec::Error, "Powershell output returned exit status #{powershell_output.exit_status}" if powershell_output.exit_status != 0
 
-  powershell_output = pwsh_single_session_teams_pnp(input('client_id'), input('tenant_id'), input('certificate_path'), input('certificate_password'), input('sharepoint_admin_url'), ensure_external_content_sharing_restricted_script)
-
+  powershell_output = pwsh_single_session_executor(ensure_external_content_sharing_restricted_script).run_script_in_teams_pnp
   describe 'Ensure the SharingCapability option for SharePoint' do
     subject { powershell_output.stdout.strip }
     it 'is set to either ExternalUserSharingOnly, ExistingExternalUserSharingOnly, or Disabled' do

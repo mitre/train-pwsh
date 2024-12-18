@@ -46,8 +46,7 @@ control 'microsoft-365-foundations-1.3.6' do
     $lock_box_status = Get-OrganizationConfig | Select-Object -ExpandProperty CustomerLockBoxEnabled
     Write-Output $lock_box_status
  )
-  powershell_output = pwsh_single_session_graph_exchange(input('client_id'), input('tenant_id'), input('client_secret'), input('certificate_path'), input('certificate_password'), input('organization'), ensure_customer_lockbox_is_enabled_script)
-
+  powershell_output = pwsh_single_session_executor(ensure_customer_lockbox_is_enabled_script).run_script_in_graph_exchange
   describe 'Ensure the CustomerLockBoxEnabled option from Get-OrganizationConfig' do
     subject { powershell_output.stdout.strip }
     it 'is set to True' do

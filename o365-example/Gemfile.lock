@@ -1,3 +1,9 @@
+PATH
+  remote: /Users/skandwal/Documents/Train Powershell/train-pwsh
+  specs:
+    train-pwsh (0.1.0)
+      train (~> 3.10)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -794,6 +800,7 @@ DEPENDENCIES
   rubocop-rake
   ruby-pwsh
   test-kitchen
+  train-pwsh!
 
 BUNDLED WITH
    2.4.22

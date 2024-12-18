@@ -38,8 +38,7 @@ control 'microsoft-365-foundations-1.2.1' do
   }
   # powershell_output = powershell(all_groups_private_script)
   # raise Inspec::Error, "Powershell output returned exit status #{powershell_output.exit_status}" if powershell_output.exit_status != 0
-
-  powershell_output = pwsh_single_session_graph_exchange(input('client_id'), input('tenant_id'), input('client_secret'), input('certificate_path'), input('certificate_password'), input('organization'), all_groups_private_script)
+  powershell_output = pwsh_single_session_executor(all_groups_private_script).run_script_in_graph_exchange
   describe 'Public groups count' do
     subject { powershell_output.stdout.to_i }
     it 'should be 0' do

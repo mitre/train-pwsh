@@ -46,8 +46,7 @@ control 'microsoft-365-foundations-8.5.3' do
   # powershell_output = powershell(ensure_people_in_org_bypass_lobby_script)
   # raise Inspec::Error, "Powershell output returned exit status #{powershell_output.exit_status}" if powershell_output.exit_status != 0
 
-  powershell_output = pwsh_single_session_teams_pnp(input('client_id'), input('tenant_id'), input('certificate_path'), input('certificate_password'), input('sharepoint_admin_url'), ensure_people_in_org_bypass_lobby_script)
-
+  powershell_output = pwsh_single_session_executor(ensure_people_in_org_bypass_lobby_script).run_script_in_teams_pnp
   describe 'Ensure that the AutoAdmittedUsers state' do
     subject { powershell_output.stdout.strip }
     it 'is set to EveryoneInCompanyExcludingGuests' do

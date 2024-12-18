@@ -52,7 +52,7 @@ control 'microsoft-365-foundations-1.1.3' do
       $globalAdmins = Get-MgDirectoryRoleMember -DirectoryRoleId $globalAdminRole.Id
       Write-Host $globalAdmins.AdditionalProperties.Count
   )
-  powershell_output = pwsh_single_session_graph_exchange(input('client_id'), input('tenant_id'), input('client_secret'), input('certificate_path'), input('certificate_password'), input('organization'), get_admin_user_count_script)
+  powershell_output = pwsh_single_session_executor(get_admin_user_count_script).run_script_in_graph_exchange
   describe 'Ensure global tenant administrator count' do
     subject { powershell_output.stdout.strip }
     it 'should be between two to four' do
