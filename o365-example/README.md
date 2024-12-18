@@ -2,7 +2,7 @@
 
 This example shows the implementation of an InSpec profile.
 
-#Control descriptions
+# Control descriptions
 
 Controls 1.1.3 and 1.2.1 are examples of Graph module in use. This uses the graph/exchange pwsh session.
 Control 1.3.6 is an example of ExchangeOnline module in use. This uses the graph/exchange pwsh session. 
