@@ -110,7 +110,7 @@ module TrainPlugins
         }
         
         pwsh_graph_exchange_install_connect_result = @pwsh_session_graph_exchange.execute(pwsh_graph_exchange_install_connect)
-        return pwsh_graph_exchange_install_connect_result[:exit_status]
+        return pwsh_graph_exchange_install_connect_result[:exitcode]
       end
 
       def uri
@@ -139,17 +139,17 @@ module TrainPlugins
           Connect-PnPOnline -Url $sharepoint_admin_url -ClientId $client_id -CertificatePath $certificate_path -CertificatePassword $password -Tenant $tenantid
         }
         pwsh_teams_pnp_install_connect_result = @pwsh_session_teams_pnp.execute(pwsh_teams_pnp_install_connect)
-        return pwsh_teams_pnp_install_connect_result[:exit_status]
+        return pwsh_teams_pnp_install_connect_result[:exitcode]
       end
 
       def run_script_in_graph_exchange(script)
         result = @pwsh_session_graph_exchange.execute(script)
-        return CommandResult.new(result[:stdout],result[:stderr],result[:exit_status])
+        return CommandResult.new(result[:stdout],result[:stderr],result[:exitcode])
       end
 
       def run_script_in_teams_pnp(script)
         result = @pwsh_session_teams_pnp.execute(script)
-        return CommandResult.new(result[:stdout],result[:stderr],result[:exit_status])
+        return CommandResult.new(result[:stdout],result[:stderr],result[:exitcode])
       end
     end
   end
