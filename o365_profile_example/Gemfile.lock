@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/mitre/train-pwsh.git
-  revision: 51d186aefaacf7626e879670df1ca04da4427ccc
+  revision: 5f966a629663b414c3180e08743a3d9ec02ef36d
   specs:
     train-pwsh (0.1.0)
       train (~> 3.10)
