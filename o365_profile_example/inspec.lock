@@ -1,7 +1,0 @@
----
-lockfile_version: 1
-depends:
-- name: inspec-pwsh
-  resolved_source:
-    git: https://github.com/mitre/inspec-pwsh.git
-  version_constraints: []
