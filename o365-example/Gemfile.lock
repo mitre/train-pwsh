@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/mitre/inspec-pwsh.git
+  revision: 1574e91e0e01d9547d43ccd51fd4c6892801ea47
+  specs:
+    inspec-pwsh (0.1.0)
+      train (~> 3.10)
+
+GIT
   remote: https://github.com/mitre/train-pwsh.git
   revision: 51d186aefaacf7626e879670df1ca04da4427ccc
   specs:
@@ -791,6 +798,7 @@ DEPENDENCIES
   inspec (>= 6.8.1)
   inspec-bin
   inspec-core
+  inspec-pwsh!
   json
   kitchen-ansible
   kitchen-inspec
