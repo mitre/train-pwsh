@@ -1,10 +1,8 @@
-name: o365
+name: o365-example-baseline
 title: InSpec Profile
-maintainer: The Authors
-copyright: The Authors
-copyright_email: you@example.com
+maintainer: SAF Team
+copyright: The MITRE Corporation, @2024
+copyright_email: saf@groups.mitre.org
 license: Apache-2.0
 summary: An InSpec Compliance Profile
 version: 0.1.0
-supports:
-  platform: os
