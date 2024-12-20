@@ -1,30 +1,45 @@
 # Train::Pwsh
 
-TODO: Delete this and the text below, and describe your gem
+A train-pwsh connection has 7 fields that are needed for authentication, which are listed below:
+- client_id
+- tenant_id
+- client_secret
+- certificate_path
+- certificate_password
+- organization
+- sharepoint_admin_url
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/train/pwsh`. To experiment with that code, run `bin/console` for an interactive prompt.
+These fields need to be defined in the config file stored at this directory: `~/.inspec/config.json`. Particularly, under the `credentials` key of the json file, create a `pwsh` key with the value being another dictionary. This dictionary should have a key named `pwsh-options` with the value being another dictionary. This dictionary should contain the names of the seven fields above as well as their values. Please refer to this [link](https://origin.inspec.io/docs/reference/config/) for more detailed instructions.
+
+Alternatively, if train is being invoked using code, this is how it can be used:
+
+**Pwsh**
+
+```ruby
+require 'train'
+train = Train.create('pwsh',
+  client_id: '1', tenant_id: '2', client_secret: '3', certificate_path: '4', certificate_password: '5', organization: '6', sharepoint_admin_url: '7')
+```
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+    $ bundle add train-pwsh
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+    $ gem install train-pwsh
 
 ## Usage
 
-TODO: Write usage instructions here
+Train-pwsh should be used alongside inspec-pwsh, which is a resource pack that is used by profiles to help maintain persisten sessions for the different modules that are called Powershell-based profiles.
 
-## Development
+Please refer to the following link for [inspec-pwsh documentation](https://github.com/mitre/inspec-pwsh)
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+To test if train-pwsh and inspec-pwsh is working correctly on your system, try running the `o365_example_baseline` profile and check the results. If it runs correctly based on your Microsoft 365 configurations, then train-pwsh and inspec-pwsh are properly set. 
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Please refer to the following link for [o365_example_baseline documentation](https://github.com/mitre/o365_example_baseline)
 
 ## Contributing
 
