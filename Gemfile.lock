@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     train-pwsh (0.1.0)
+      ruby-pwsh
       train (~> 3.10)
 
 GEM

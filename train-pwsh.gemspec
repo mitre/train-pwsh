@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "train", "~> 3.10"
+  spec.add_dependency "ruby-pwsh"
   #Add powershell dependency
   #spec.add_dependency "pwsh" , "~> 0.1"
 
