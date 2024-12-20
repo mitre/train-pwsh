@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version = Train::Pwsh::VERSION
   spec.authors = ["Sujay Kandwal"]
   spec.email = ["skandwal@mitre.org"]
-
+  spec.files = Dir['lib/**/*.rb'] + Dir['bin/*']+ ["README.md", "LICENSE.md", "NOTICE.md", "CHANGELOG.md", "CODE_OF_CONDUCT.md"]
   spec.summary = "Enabling continuous Powershell connection over Inspec"
   #spec.description = "TODO: Write a longer description or delete this line."
   #spec.homepage = "TODO: Put your gem's website or public repo URL here."
