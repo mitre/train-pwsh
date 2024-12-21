@@ -106,6 +106,7 @@ module TrainPlugins
           If($null -eq (get-module -name "ExchangeOnlineManagement")){import-module ExchangeOnlineManagement}
           $password = ConvertTo-SecureString -String $clientSecret -AsPlainText -Force
           $ClientSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential($client_id,$password)
+          Connect-IPPSSession -AppID $client_id -CertificateFilePath $certificate_path -CertificatePassword (ConvertTo-SecureString -String $certificate_password -AsPlainText -Force) -Organization $organization -ShowBanner:$false
           Connect-ExchangeOnline -CertificateFilePath $certificate_path -CertificatePassword (ConvertTo-SecureString -String $certificate_password -AsPlainText -Force)  -AppID $client_id -Organization $organization -ShowBanner:$false
         }
         
@@ -144,11 +145,17 @@ module TrainPlugins
 
       def run_script_in_graph_exchange(script)
         result = @pwsh_session_graph_exchange.execute(script)
+        if result[:stdout].nil?
+          result[:stdout] = ""
+        end
         return CommandResult.new(result[:stdout],result[:stderr],result[:exitcode])
       end
 
       def run_script_in_teams_pnp(script)
         result = @pwsh_session_teams_pnp.execute(script)
+        if result[:stdout].nil?
+          result[:stdout] = ""
+        end
         return CommandResult.new(result[:stdout],result[:stderr],result[:exitcode])
       end
     end

@@ -11,7 +11,13 @@ A train-pwsh connection has 7 fields that are needed for authentication, which a
 
 These fields need to be defined in the config file stored at this directory: `~/.inspec/config.json`. Particularly, under the `credentials` key of the json file, create a `pwsh` key with the value being another dictionary. This dictionary should have a key named `pwsh-options` with the value being another dictionary. This dictionary should contain the names of the seven fields above as well as their values. Please refer to this [link](https://origin.inspec.io/docs/reference/config/) for more detailed instructions.
 
-Alternatively, if train is being invoked using code, this is how it can be used:
+On top of this, environment variables may need to be defined for some of these seven fields if they are to be used elsewhere in the profile as inputs. The README for the profile will specify which ones need to be stored as environment variables. 
+
+To set an environment variable on Mac, go to the `zschrc` file located at `~/.zschrc` and enter in the following syntax: `export VARIABLE_NAME='insert_value'`
+
+To se and environment variable on Windows, click `Win + R`, type `cmd`, and hit enter. Then, this syntax can be used `setx VARIABLE_NAME "Variable Value"`
+
+If train is being invoked using code, this is how it can be used:
 
 **Pwsh**
 
