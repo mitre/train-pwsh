@@ -20,9 +20,6 @@ module TrainPlugins
       #option :certificate_password, required: true, default: proc { ENV['CERTIFICATE_PASSWORD'] } unless ENV['CERTIFICATE_PASSWORD'].empty? 
       #option :organization, required: true, default: proc { ENV['ORGANIZATION'] } unless ENV['ORGANIZATION'].empty? 
       #option :sharepoint_admin_url, required: true, default: proc { ENV['SHAREPOINT_ADMIN_URL'] } unless ENV['SHAREPOINT_ADMIN_URL'].empty? 
-
-      option :graph_exchange_session, required: true, default: proc { ::Pwsh::Manager.instance(ENV['PWSH_PATH'], ['-NoLogo']) }
-      option :teams_pnp_session, required: true, default: proc { ::Pwsh::Manager.instance(ENV['PWSH_PATH'], []) }
       
       # The options passed to this are undocumented and rarely used.
       def connection(_instance_opts = nil)

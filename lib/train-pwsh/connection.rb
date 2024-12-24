@@ -50,8 +50,11 @@ module TrainPlugins
         #Instance variables that store the necessary authentication credentials
         #@pwsh_session_graph_exchange = ::Pwsh::Manager.instance('/opt/homebrew/bin/pwsh', ['-NoLogo'])
         #@pwsh_session_teams_pnp = ::Pwsh::Manager.instance('/opt/homebrew/bin/pwsh', [])
-        @pwsh_session_graph_exchange = @options.delete(:graph_exchange_session)
-        @pwsh_session_teams_pnp = @options.delete(:teams_pnp_session)
+        @pwsh_path = @options.delete(:pwsh_path)
+        #@pwsh_session_graph_exchange = @options.delete(:graph_exchange_session)
+        #@pwsh_session_teams_pnp = @options.delete(:teams_pnp_session)
+        @pwsh_session_graph_exchange = ::Pwsh::Manager.instance("#{@pwsh_path}", ['-NoLogo'])
+        @pwsh_session_teams_pnp = ::Pwsh::Manager.instance("#{@pwsh_path}", [])
         @client_id = @options.delete(:client_id)
         @tenant_id = @options.delete(:tenant_id)
         @client_secret = @options.delete(:client_secret)
