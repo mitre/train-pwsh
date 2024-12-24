@@ -1,18 +1,18 @@
 # Train::Pwsh
 
-A train-pwsh connection has 7 fields that are needed for authentication, which are listed below:
-- client_id
-- tenant_id
-- client_secret
-- certificate_path
-- certificate_password
-- organization
-- sharepoint_admin_url
-- pwsh_path
+A train-pwsh connection has eight fields that are needed for authentication, which are listed below:
+- client_id (id of client)
+- tenant_id (id of tenant)
+- client_secret (secret key for client)
+- certificate_path (path on machine where authentication certificate is stored)
+- certificate_password (password for certificate)
+- organization (organization domain)
+- sharepoint_admin_url (sharepoint url for admin)
+- pwsh_path (path on machine where the powershell executable is stored)
 
 These fields need to be defined in the config file stored at this directory: `~/.inspec/config.json`. Particularly, under the `credentials` key of the json file, create a `pwsh` key with the value being another dictionary. This dictionary should have a key named `pwsh-options` with the value being another dictionary. This dictionary should contain the names of the eight fields above as well as their values. Please refer to this [link](https://origin.inspec.io/docs/reference/config/) for more detailed instructions.
 
-On top of this, environment variables may need to be defined for some of these seven fields if they are to be used elsewhere in the profile as inputs. The README for the profile will specify which ones need to be stored as environment variables. 
+On top of this, environment variables may need to be defined for some of these eight fields if they are to be used elsewhere in the profile as inputs. The README for the profile will specify which ones need to be stored as environment variables. 
 
 To set an environment variable on Mac, go to the `zschrc` file located at `~/.zschrc` and enter in the following syntax: `export VARIABLE_NAME='insert_value'`
 
