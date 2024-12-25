@@ -151,6 +151,11 @@ module TrainPlugins
         if result[:stdout].nil?
           result[:stdout] = ""
         end
+        if !result[:stdout].empty? && result[:stdout].match?(/is not recognized|session is not established/i)
+          result[:stderr] = result[:stdout]
+          result[:stdout] = ""
+          result[:exitcode] = -1
+        end
         return CommandResult.new(result[:stdout],result[:stderr],result[:exitcode])
       end
 
@@ -158,6 +163,11 @@ module TrainPlugins
         result = @pwsh_session_teams_pnp.execute(script)
         if result[:stdout].nil?
           result[:stdout] = ""
+        end
+        if !result[:stdout].empty? && result[:stdout].match?(/is not recognized|session is not established/i)
+          result[:stderr] = result[:stdout]
+          result[:stdout] = ""
+          result[:exitcode] = -1
         end
         return CommandResult.new(result[:stdout],result[:stderr],result[:exitcode])
       end
