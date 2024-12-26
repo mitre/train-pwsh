@@ -98,14 +98,14 @@ module TrainPlugins
           $organization = '#{@organization}'
 
           #Connect to Graph module
-          If($null -eq (get-module -listavailable -name "microsoft.graph")){install-module microsoft.graph}
+          If($null -eq (get-module -listavailable -name "microsoft.graph")){install-module microsoft.graph -Force -AllowClobber}
           If($null -eq (get-module -name "microsoft.graph")){import-module microsoft.graph}
           $password = ConvertTo-SecureString -String $clientSecret -AsPlainText -Force
           $ClientSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential($client_id,$password)
           Connect-MgGraph -TenantId $tenantid -ClientSecretCredential $ClientSecretCredential -NoWelcome
 
           #Connect to Exchange module
-          If($null -eq (get-module -listavailable -name "ExchangeOnlineManagement")){install-module ExchangeOnlineManagement}
+          If($null -eq (get-module -listavailable -name "ExchangeOnlineManagement")){install-module ExchangeOnlineManagement -Force -AllowClobber}
           If($null -eq (get-module -name "ExchangeOnlineManagement")){import-module ExchangeOnlineManagement}
           $password = ConvertTo-SecureString -String $clientSecret -AsPlainText -Force
           $ClientSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential($client_id,$password)
@@ -131,13 +131,13 @@ module TrainPlugins
           $sharepoint_admin_url = '#{@sharepoint_admin_url}'
 
           #Connect to Teams module
-          If($null -eq (get-module -listavailable -name "MicrosoftTeams")){install-module MicrosoftTeams}
+          If($null -eq (get-module -listavailable -name "MicrosoftTeams")){install-module MicrosoftTeams -Force -AllowClobber}
           If($null -eq (get-module -name "MicrosoftTeams")){import-module MicrosoftTeams}
           $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificate_path,$certificate_password)
           Connect-MicrosoftTeams -Certificate $cert -ApplicationId $client_id -TenantId $tenantid > $null
 
           #Connect to PnP module
-          If($null -eq (get-module -listavailable -name "PnP.PowerShell")){install-module PnP.PowerShell}
+          If($null -eq (get-module -listavailable -name "PnP.PowerShell")){install-module PnP.PowerShell -Force -AllowClobber}
           If($null -eq (get-module -name "PnP.PowerShell")){import-module PnP.PowerShell}
           $password = (ConvertTo-SecureString -AsPlainText $certificate_password -Force)
           Connect-PnPOnline -Url $sharepoint_admin_url -ClientId $client_id -CertificatePath $certificate_path -CertificatePassword $password -Tenant $tenantid
