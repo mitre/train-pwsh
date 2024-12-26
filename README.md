@@ -25,7 +25,7 @@ If train is being invoked using code, this is how it can be used:
 ```ruby
 require 'train'
 train = Train.create('pwsh',
-  client_id: '1', tenant_id: '2', client_secret: '3', certificate_path: '4', certificate_password: '5', organization: '6', sharepoint_admin_url: '7')
+  client_id: '1', tenant_id: '2', client_secret: '3', certificate_path: '4', certificate_password: '5', organization: '6', sharepoint_admin_url: '7', pwsh_path: '8')
 ```
 
 ## Installation
