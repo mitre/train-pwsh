@@ -55,6 +55,7 @@ module TrainPlugins
         #@pwsh_session_teams_pnp = @options.delete(:teams_pnp_session)
         @pwsh_session_graph_exchange = ::Pwsh::Manager.instance("#{@pwsh_path}", ['-NoLogo'])
         @pwsh_session_teams_pnp = ::Pwsh::Manager.instance("#{@pwsh_path}", [])
+        @pwsh_session_azure = ::Pwsh::Manager.instance("#{@pwsh_path}", ['-NoProfile'])
         @client_id = @options.delete(:client_id)
         @tenant_id = @options.delete(:tenant_id)
         @client_secret = @options.delete(:client_secret)
@@ -65,10 +66,13 @@ module TrainPlugins
         
         exit_status_graph_exchange = install_connect_graph_exchange()
         exit_status_teams_pnp = install_connect_teams_pnp()
+        exit_status_azure = install_azure()
         if exit_status_graph_exchange != 0
           return exit_status_graph_exchange
         elsif exit_status_teams_pnp != 0
           return exit_status_teams_pnp
+        elsif exit_status_azure != 0
+          return exit_status_azure
         end
         
       end
@@ -82,6 +86,8 @@ module TrainPlugins
           return run_script_in_graph_exchange(script)
         elsif session_type_hash.key?(:teams_pnp_session)
           return run_script_in_teams_pnp(script)
+        elsif session_type_hash.key?(:azure_session)
+          return run_script_in_azure(script)
         else
           return CommandResult.new("","",0)
         end
@@ -146,6 +152,24 @@ module TrainPlugins
         return pwsh_teams_pnp_install_connect_result[:exitcode]
       end
 
+      def install_azure()
+        pwsh_azure_install_connect = %{
+          #Collect designated inputs required for Graph, Exchange, and PnP connections
+          $client_id = '#{@client_id}'
+          $tenantid = '#{@tenant_id}'
+          $certificate_password = '#{@certificate_password}'
+          $certificate_path = '#{@certificate_path}'
+          $sharepoint_admin_url = '#{@sharepoint_admin_url}'
+
+          #Connect to Teams module
+          If ($null -eq (Get-Module -ListAvailable -Name "Az")) {Install-Module Az -Force -AllowClobber}
+          If ($null -eq (Get-Module -Name "Az")) {Import-Module Az}
+          Connect-AzAccount
+        }
+        pwsh_azure_install_connect_result = @pwsh_session_azure.execute(pwsh_azure_install_connect)
+        return pwsh_azure_install_connect_result[:exitcode]
+      end
+
       def run_script_in_graph_exchange(script)
         result = @pwsh_session_graph_exchange.execute(script)
         if result[:stdout].nil?
@@ -161,6 +185,19 @@ module TrainPlugins
 
       def run_script_in_teams_pnp(script)
         result = @pwsh_session_teams_pnp.execute(script)
+        if result[:stdout].nil?
+          result[:stdout] = ""
+        end
+        if !result[:stdout].empty? && result[:stdout].match?(/is not recognized|session is not established/i)
+          result[:stderr] = result[:stdout]
+          result[:stdout] = ""
+          result[:exitcode] = -1
+        end
+        return CommandResult.new(result[:stdout],result[:stderr],result[:exitcode])
+      end
+
+      def run_script_in_azure(script)
+        result = @pwsh_session_azure.execute(script)
         if result[:stdout].nil?
           result[:stdout] = ""
         end
