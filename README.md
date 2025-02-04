@@ -12,6 +12,31 @@ A train-pwsh connection has eight fields that are needed for authentication, whi
 
 These fields need to be defined in the config file stored at this directory: `~/.inspec/config.json`. Particularly, under the `credentials` key of the json file, create a `pwsh` key with the value being another dictionary. This dictionary should have a key named `pwsh-options` with the value being another dictionary. This dictionary should contain the names of the eight fields above as well as their values. Please refer to this [link](https://origin.inspec.io/docs/reference/config/) for more detailed instructions.
 
+As mentioned in the link above documentation, to run train-pwsh, a `config.json` file is needed at the following directory: `~/.inspec/config.json`. An example json file is shown below; the values will need to be populated with your actual data. 
+
+```json
+{
+    "version": "1.1",
+    "cli_options": {
+        "color": "true"
+    },
+    "credentials": {
+        "pwsh": {
+            "pwsh-options": {
+                "client_id": "INSERT CLIENT ID",
+                "tenant_id": "INSERT TENANT ID",
+                "client_secret": "INSERT CLIENT SECRET",
+                "certificate_path": "INSERT CERTIFICATE PATH",
+                "certificate_password": "INSERT CERTIFICATE PASSWORD",
+                "organization": "INSERT ORGANIZATION",
+                "sharepoint_admin_url": "INSERT SHAREPOINT ADMIN URL",
+                "pwsh_path": "INSERT POWERSHELL PATH"
+            }
+        }
+    }
+}
+```
+
 On top of this, environment variables may need to be defined for some of these eight fields if they are to be used elsewhere in the profile as inputs. The README for the profile will specify which ones need to be stored as environment variables. 
 
 To set an environment variable on Mac, go to the `zschrc` file located at `~/.zschrc` and enter in the following syntax: `export VARIABLE_NAME='insert_value'`
