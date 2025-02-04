@@ -7,4 +7,6 @@ gemspec
 
 gem "rake", "~> 13.0"
 gem 'ruby-pwsh'
+gem 'bundler'
+gem 'github_changelog_generator'
 
